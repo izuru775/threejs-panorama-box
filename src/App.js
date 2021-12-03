@@ -32,7 +32,7 @@ class App extends Component {
 				controls.enableDamping = true;
 				controls.rotateSpeed = - 0.25;
 
-				const textures = getTexturesFromAtlasFile( "images/cubemap.jpg", 6 );
+				const textures = getTexturesFromAtlasFile( "images/cubemap-miami.jpg", 6 );
 
 				const materials = [];
 
