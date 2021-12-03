@@ -6,7 +6,7 @@ import {BrowserRouter as Router} from "react-router-dom";
 ReactDOM.render(
     <Router>
         <p>Example from: threejs(https://threejs.org/examples/?q=panora#webgl_panorama_cube)</p>
-        Hosted by : Sodi Adikaram (Deakin University)
+        Created by : Sodi Adikaram (Deakin University)
         <App/>
     </Router>,
     document.getElementById("root")
