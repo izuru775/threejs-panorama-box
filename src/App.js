@@ -6,106 +6,127 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 class App extends Component {
     componentDidMount() {
         let camera, controls;
-			let renderer;
-			let scene;
+        let renderer;
+        let scene;
 
-			init();
-			animate();
+        init();
+        animate();
 
-			function init() {
+        function init() {
 
-				const container = document.getElementById( 'container' );
+            const container = document.getElementById('container');
 
-				renderer = new THREE.WebGLRenderer();
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				document.body.appendChild( renderer.domElement );
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
 
-				scene = new THREE.Scene();
+            scene = new THREE.Scene();
 
-				camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 100 );
-				camera.position.z = 0.01;
+            camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.z = 0.01;
 
-				controls = new OrbitControls( camera, renderer.domElement );
-				controls.enableZoom = false;
-				controls.enablePan = false;
-				controls.enableDamping = true;
-				controls.rotateSpeed = - 0.25;
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableZoom = false;
+            controls.enablePan = false;
+            controls.enableDamping = true;
+            controls.rotateSpeed = - 1.00;
 
-				const textures = getTexturesFromAtlasFile( "images/cubemap-miami.jpg", 6 );
+            // const textures = getTexturesFromAtlasFile( "images/cubemap-miami.jpg", 6 );
 
-				const materials = [];
+            // const materials = [];
 
-				for ( let i = 0; i < 6; i ++ ) {
+            // for ( let i = 0; i < 6; i ++ ) {
 
-					materials.push( new THREE.MeshBasicMaterial( { map: textures[ i ] } ) );
+            // 	materials.push( new THREE.MeshBasicMaterial( { map: textures[ i ] } ) );
 
-				}
+            // }
+            let materialArray = [];
+            let texture_ft = new THREE.TextureLoader().load('images/front.png');
+            let texture_bk = new THREE.TextureLoader().load('images/back.png');
+            let texture_up = new THREE.TextureLoader().load('images/up.png');
+            let texture_dn = new THREE.TextureLoader().load('images/down.png');
+            let texture_rt = new THREE.TextureLoader().load('images/left1.png');
+            let texture_lf = new THREE.TextureLoader().load('images/right.png');
 
-				const skyBox = new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), materials );
-				skyBox.geometry.scale( 1, 1, - 1 );
-				scene.add( skyBox );
+            materialArray.push(new THREE.MeshBasicMaterial({ map: texture_ft }));
+            materialArray.push(new THREE.MeshBasicMaterial({ map: texture_bk }));
+            materialArray.push(new THREE.MeshBasicMaterial({ map: texture_up }));
+            materialArray.push(new THREE.MeshBasicMaterial({ map: texture_dn }));
+            materialArray.push(new THREE.MeshBasicMaterial({ map: texture_rt }));
+            materialArray.push(new THREE.MeshBasicMaterial({ map: texture_lf }));
 
-				window.addEventListener('resize', onWindowResize );
+            for (let i = 0; i < 6; i++)
+                materialArray[i].side = THREE.BackSide;
 
-			}
+            let skyboxGeo = new THREE.BoxGeometry(1, 1, 1);
+            let skybox = new THREE.Mesh(skyboxGeo, materialArray);
+            scene.add(skybox);
 
-			function getTexturesFromAtlasFile( atlasImgUrl, tilesNum ) {
+            // const skyBox = new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), materials );
+            // skyBox.geometry.scale( 1, 1, - 1 );
+            // scene.add( skyBox );
 
-				const textures = [];
+            window.addEventListener('resize', onWindowResize);
 
-				for ( let i = 0; i < tilesNum; i ++ ) {
+        }
 
-					textures[ i ] = new THREE.Texture();
+        // function getTexturesFromAtlasFile(atlasImgUrl, tilesNum) {
 
-				}
+        //     const textures = [];
 
-				new THREE.ImageLoader()
-					.load( atlasImgUrl, ( image ) => {
+        //     for (let i = 0; i < tilesNum; i++) {
 
-						let canvas, context;
-						const tileWidth = image.height;
+        //         textures[i] = new THREE.Texture();
 
-						for ( let i = 0; i < textures.length; i ++ ) {
+        //     }
 
-							canvas = document.createElement( 'canvas' );
-							context = canvas.getContext( '2d' );
-							canvas.height = tileWidth;
-							canvas.width = tileWidth;
-							context.drawImage( image, tileWidth * i, 0, tileWidth, tileWidth, 0, 0, tileWidth, tileWidth );
-							textures[ i ].image = canvas;
-							textures[ i ].needsUpdate = true;
+        //     new THREE.ImageLoader()
+        //         .load(atlasImgUrl, (image) => {
 
-						}
+        //             let canvas, context;
+        //             const tileWidth = image.height;
 
-					} );
+        //             for (let i = 0; i < textures.length; i++) {
 
-				return textures;
+        //                 canvas = document.createElement('canvas');
+        //                 context = canvas.getContext('2d');
+        //                 canvas.height = tileWidth;
+        //                 canvas.width = tileWidth;
+        //                 context.drawImage(image, tileWidth * i, 0, tileWidth, tileWidth, 0, 0, tileWidth, tileWidth);
+        //                 textures[i].image = canvas;
+        //                 textures[i].needsUpdate = true;
 
-			}
+        //             }
 
-			function onWindowResize() {
+        //         });
 
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
+        //     return textures;
 
-				renderer.setSize( window.innerWidth, window.innerHeight );
+        // }
 
-			}
+        function onWindowResize() {
 
-			function animate() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
 
-				requestAnimationFrame( animate );
+            renderer.setSize(window.innerWidth, window.innerHeight);
 
-				controls.update(); // required when damping is enabled
+        }
 
-				renderer.render( scene, camera );
+        function animate() {
 
-			}
+            requestAnimationFrame(animate);
+
+            controls.update(); // required when damping is enabled
+
+            renderer.render(scene, camera);
+
+        }
     }
-    
-    render(){
-        return(
+
+    render() {
+        return (
             <>
             </>
         )
