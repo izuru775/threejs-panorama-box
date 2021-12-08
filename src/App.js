@@ -27,7 +27,7 @@ class App extends Component {
             camera.position.z = 0.01;
 
             controls = new OrbitControls(camera, renderer.domElement);
-            controls.enableZoom = false;
+            controls.enableZoom = true;
             controls.enablePan = false;
             controls.enableDamping = true;
             controls.rotateSpeed = - 1.00;
